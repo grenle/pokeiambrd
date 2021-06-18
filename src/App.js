@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import React, { Component } from "react"
+
+import Container from 'react-bootstrap/Container'
+
+import PokeHero from './components/PokeHero'
+import PokeList from './components/PokeList'
+
+import { getPokemons } from './utils'
+
+
+class App extends Component{
+  constructor(){
+    super()
+    this.state = {
+      selectedIndex: 0,
+      pokemons: []
+    }
+  }
+  async componentDidMount(){
+    const pokemons = await getPokemons()
+    this.setState({pokemons})
+  }
+  selectPokemon = function selectPokemon(selectedIndex){
+    this.setState({selectedIndex})
+  }.bind(this)
+  render(){
+    const { pokemons, selectedIndex } = this.state
+    return (
+      <Container fluid>
+        {pokemons.length && <PokeHero pokemon={pokemons[selectedIndex]} />}
+        <PokeList onClick={this.selectPokemon} pokemons={pokemons} />
+      </Container>
+    )
+  }
 }
 
 export default App;
